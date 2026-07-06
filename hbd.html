@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday, Mint! 🎂✨</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Anuphan:wght@400;600&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --mint: #E8F5E9;
+            --mint-dark: #A5D6A7;
+            --pink: #FFE0E6;
+            --pink-dark: #FFB7C5;
+            --lavender: #F3E5F5;
+            --text-color: #5C5470;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Fredoka', 'Anuphan', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #E8F5E9 0%, #FFE0E6 50%, #F3E5F5 100%);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            overflow: hidden;
+            position: relative;
+            padding: 20px;
+        }
+
+        /* Soft Animated Background Gradient */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- Floating Decorative Elements --- */
+        .floating-decor {
+            position: absolute;
+            font-size: 2rem;
+            user-select: none;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes float-up {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- Main Birthday Card --- */
+        .card {
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            width: 100%;
+            max-width: 480px;
+            text-align: center;
+            box-shadow: 0 8px 32px 0 rgba(175, 160, 190, 0.2);
+            z-index: 10;
+            transform: scale(0.9);
+            opacity: 0;
+            animation: cardAppear 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            animation-delay: 0.2s;
+        }
+
+        @keyframes cardAppear {
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        .cake-emoji {
+            font-size: 4.5rem;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.05));
+            animation: bounce 3s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            color: var(--text-color);
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+        }
+
+        .subtitle {
+            color: #7D7495;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin-bottom: 2.5rem;
+        }
+
+        /* --- Magic Button --- */
+        .magic-btn {
+            background: linear-gradient(135deg, #FFB7C5 0%, #CDA7D6 100%);
+            border: none;
+            outline: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            color: white;
+            font-family: 'Fredoka', 'Anuphan', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 183, 197, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .magic-btn:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 6px 20px rgba(255, 183, 197, 0.6);
+        }
+
+        .magic-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* --- Modal Popup --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(92, 84, 112, 0.25);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal {
+            background: white;
+            padding: 2.5rem 2rem;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 440px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(30px);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-heart {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        .modal-text {
+            font-family: 'Anuphan', sans-serif;
+            color: var(--text-color);
+            font-size: 1.1rem;
+            line-height: 1.7;
+            text-align: left;
+            margin-bottom: 2rem;
+            word-break: break-word;
+        }
+
+        .close-btn {
+            background: #F5F5F5;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 50px;
+            color: #888;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .close-btn:hover {
+            background: #EAEAEA;
+            color: #555;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 400px) {
+            h1 { font-size: 1.8rem; }
+            .card { padding: 2.5rem 1.5rem; }
+            .modal { padding: 2rem 1.5rem; }
+            .modal-text { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="decor-container"></div>
+
+    <div class="card">
+        <div class="avatar-container">
+            <div class="cake-emoji">🎂</div>
+        </div>
+        <h1>Happy Birthday, Mint! ✨</h1>
+        <p class="subtitle">Wishing you a year filled with love, laughter, and endless happiness.</p>
+        <button class="magic-btn" id="openBtn">Click for a special message 💖</button>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-heart">💝</div>
+            <p class="modal-text">
+                สุขสันต์วันเกิดนะมิ้น! ขอบคุณมากๆ เลยนะที่คอยอยู่ข้างๆ กัน คอยรับฟังและผ่านอะไรหลายๆ อย่างมาด้วยกัน ขอให้ปีนี้เป็นปีที่ใจดีกับมิ้นนะ ขอให้มิ้นมีความสุขมากๆ ได้ทำในสิ่งที่ชอบ และเติบโตไปในทางที่งดงาม ไม่ว่าจะเจอเรื่องเหนื่อยแค่ไหน หันมาก็เจอเราเสมอนะ อยู่เป็นเพื่อนกันไปนานๆนะ
+            </p>
+            <button class="close-btn" id="closeBtn">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // --- Confetti Logic ---
+        function triggerConfetti() {
+            // Left burst
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { x: 0.1, y: 0.6 },
+                colors: ['#A5D6A7', '#FFB7C5', '#CDA7D6', '#FFF59D']
+            });
+            // Right burst
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { x: 0.9, y: 0.6 },
+                colors: ['#A5D6A7', '#FFB7C5', '#CDA7D6', '#FFF59D']
+            });
+        }
+
+        // Continuous gentle confetti shower on load
+        function startContinuousConfetti() {
+            var duration = 4 * 1000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 2,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#FFB7C5', '#CDA7D6']
+                });
+                confetti({
+                    particleCount: 2,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#A5D6A7', '#FFF59D']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+
+        // --- Floating Elements Generator ---
+        const emojis = ['✨', '🌸', '💖', '⭐️', '🍬', '🦄'];
+        const decorContainer = document.getElementById('decor-container');
+
+        function createFloatingElement() {
+            const element = document.createElement('div');
+            element.classList.add('floating-decor');
+            element.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+            
+            // Randomize position and animation properties
+            element.style.left = Math.random() * 100 + 'vw';
+            element.style.bottom = '-50px';
+            
+            const duration = Math.random() * 6 + 6; // 6s to 12s
+            element.style.animation = `float-up ${duration}s linear forwards`;
+            
+            // Random sizes
+            element.style.fontSize = Math.random() * 1.5 + 1 + 'rem';
+
+            decorContainer.appendChild(element);
+
+            // Remove elements after they float off screen
+            setTimeout(() => {
+                element.remove();
+            }, duration * 1000);
+        }
+
+        // --- Event Listeners & Initialization ---
+        window.addEventListener('DOMContentLoaded', () => {
+            // Trigger background confetti streams
+            startContinuousConfetti();
+            setTimeout(triggerConfetti, 500);
+
+            // Periodically spawn floating items
+            setInterval(createFloatingElement, 800);
+            for(let i = 0; i < 8; i++) { // Initial batch
+                setTimeout(createFloatingElement, Math.random() * 2000);
+            }
+        });
+
+        // Modal Controls
+        const modalOverlay = document.getElementById('modalOverlay');
+        const openBtn = document.getElementById('openBtn');
+        const closeBtn = document.getElementById('closeBtn');
+
+        openBtn.addEventListener('click', () => {
+            modalOverlay.classList.add('active');
+            // Extra celebratory spray when opening the message
+            triggerConfetti();
+        });
+
+        closeBtn.addEventListener('click', () => {
+            modalOverlay.classList.remove('active');
+        });
+
+        // Close modal if user clicks outside the message box
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                modalOverlay.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
